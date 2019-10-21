@@ -33,7 +33,12 @@ router.post('/users', (req, res) => {
 router.get('/users/:uid', (req, res) => {
   let id = "5dae31155a1bb3363c9746c9"
   
-  console.log(User.findOne({ "username": "edivandecastro" }));
+  User.findById(id)
+  .then((doc)=>{
+      console.log(doc);
+  }).catch((err)=>{
+      console.log(err);
+  });
   res.json({});
 });
 
