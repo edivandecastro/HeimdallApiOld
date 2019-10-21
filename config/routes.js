@@ -11,7 +11,7 @@ config = {
   useUnifiedTopology: true
 }
 
-mongoose.connect('mongodb://localhost:27017/heimdall', config);
+mongoose.connect('mongodb+srv://omnistack:omnistack@omnistack-hfiub.mongodb.net/heimdall?retryWrites=true&w=majority', config);
 
 let userSchema = new mongoose.Schema({
   username: String,
@@ -22,15 +22,19 @@ let User = mongoose.model('User', userSchema);
 
 router.post('/users', (req, res) => {
   let user = new User({ username: req.body.username, password: req.body.password });
-  user.save;
-  res.json({ message: "Usuário salvo com sucesso!", uid: user._id });
+
+  User.create({ "username": user.username, "password": user.password }, (err, user) => {
+    if (err) return handleError(err);
+  });
+
+  res.json({ message: "Usuário salvo com sucesso!", uid: user.id });
 });
 
 router.get('/users/:uid', (req, res) => {
-  let usuario = User.findById(req.params.uid);
-  console.log(req.params.uid);
-  console.log(usuario);
-  res.json({ "message": "oi"});
+  let id = "5dae31155a1bb3363c9746c9"
+  
+  console.log(User.findOne({ "username": "edivandecastro" }));
+  res.json({});
 });
 
 module.exports = router;
