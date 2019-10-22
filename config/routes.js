@@ -1,6 +1,8 @@
 const express = require('express');
 const mongoose = require('mongoose');
 
+const User = require('../models/User');
+
 const router = express.Router();
 
 router.use(express.json());
@@ -11,33 +13,47 @@ config = {
   useUnifiedTopology: true
 }
 
-mongoose.connect('mongodb+srv://omnistack:omnistack@omnistack-hfiub.mongodb.net/heimdall?retryWrites=true&w=majority', config);
+// mongoose.connect('mongodb+srv://omnistack:omnistack@omnistack-hfiub.mongodb.net/heimdall?retryWrites=true&w=majority', config);
+mongoose.connect('mongodb://localhost:27017/heimdall', config);
 
-let userSchema = new mongoose.Schema({
-  username: String,
-  password: String
+router.post('/authenticate', (req, res) => {
+  let username = req.body.username;
+  let password = req.body.password;
+
+  User.findOne({ username: username, password: password }, (err, user)=> {
+    if(!err) {
+      res.json({ success: "true", token: "ghjsdhqnauauqj1du701ua01", "user": user });
+    }
+    else {
+      res.json({ success: false });
+    }
+  })
 });
 
-let User = mongoose.model('User', userSchema);
-
 router.post('/users', (req, res) => {
-  let user = new User({ username: req.body.username, password: req.body.password });
+  let user = new User(req.body.user);
 
-  User.create({ "username": user.username, "password": user.password }, (err, user) => {
-    if (err) return handleError(err);
+  User.create(user, (err, user) => {
+    if (err) {
+      res.json({ message: "Ocorreu um erro ao salvar o usuário.", uid: user.id });
+    }
+    else {
+      res.json({ message: "Usuário salvo com sucesso!", uid: user.id });
+    }
   });
-
-  res.json({ message: "Usuário salvo com sucesso!", uid: user.id });
 });
 
 router.get('/users/:uid', (req, res) => {
-  let id = "5dae31155a1bb3363c9746c9"
-  
+  let id = req.params.uid;
+
   User.findById(id, (err, user) => {
-    console.log(user);
-    console.log(err);
+    if (!err) {
+      res.json({ user });
+    }
+    else {
+      res.json({ "message": "Não foi encontrado usuário para o parametro informado." });
+    }
   });
-  res.json({});
 });
 
 module.exports = router;
