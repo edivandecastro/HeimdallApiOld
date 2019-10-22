@@ -2,6 +2,7 @@ const express = require('express');
 const mongoose = require('mongoose');
 
 const User = require('../models/User');
+const UserController = require('../controllers/UserController');
 
 const router = express.Router();
 
@@ -13,8 +14,8 @@ config = {
   useUnifiedTopology: true
 }
 
-// mongoose.connect('mongodb+srv://omnistack:omnistack@omnistack-hfiub.mongodb.net/heimdall?retryWrites=true&w=majority', config);
-mongoose.connect('mongodb://localhost:27017/heimdall', config);
+mongoose.connect('mongodb+srv://omnistack:omnistack@omnistack-hfiub.mongodb.net/heimdall?retryWrites=true&w=majority', config);
+//mongoose.connect('mongodb://localhost:27017/heimdall', config);
 
 router.post('/authenticate', (req, res) => {
   let username = req.body.username;
@@ -30,30 +31,8 @@ router.post('/authenticate', (req, res) => {
   })
 });
 
-router.post('/users', (req, res) => {
-  let user = new User(req.body.user);
+router.post('/users', UserController.create);
 
-  User.create(user, (err, user) => {
-    if (err) {
-      res.json({ message: "Ocorreu um erro ao salvar o usuário.", uid: user.id });
-    }
-    else {
-      res.json({ message: "Usuário salvo com sucesso!", uid: user.id });
-    }
-  });
-});
-
-router.get('/users/:uid', (req, res) => {
-  let id = req.params.uid;
-
-  User.findById(id, (err, user) => {
-    if (!err) {
-      res.json({ user });
-    }
-    else {
-      res.json({ "message": "Não foi encontrado usuário para o parametro informado." });
-    }
-  });
-});
+router.get('/users/:uid', UserController.show);
 
 module.exports = router;
