@@ -20,8 +20,8 @@ router.post('/authenticate', (req, res) => {
   let username = req.body.username;
   let password = req.body.password;
 
-  User.findOne({ username: username, password: password }, (err, user)=> {
-    if(!err) {
+  User.findOne({ username: username, password: password }, (err, user) => {
+    if (!err) {
       res.json({ success: "true", token: "ghjsdhqnauauqj1du701ua01", "user": user });
     }
     else {
