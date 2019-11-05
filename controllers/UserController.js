@@ -7,7 +7,7 @@ module.exports = {
     User.create(user, (err, user) => {
       if (err) {
         let reason = err.errmsg
-        console.log(err.code);
+        
         if (err.code == "11000") 
           reason = "Username already exists!";
 
@@ -20,7 +20,7 @@ module.exports = {
   },
 
   async show(req, res) {
-    let id = req.params.uid;
+    let id = req.params.id;
 
     User.findById(id, (err, user) => {
       if(user) {
