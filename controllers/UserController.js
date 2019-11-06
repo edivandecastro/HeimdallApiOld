@@ -7,8 +7,8 @@ module.exports = {
     User.create(user, (err, user) => {
       if (err) {
         let reason = err.errmsg
-        
-        if (err.code == "11000") 
+
+        if (err.code == "11000")
           reason = "Username already exists!";
 
         res.status(400).send({ "message": "There was an error registering the user!", "reason": reason });
