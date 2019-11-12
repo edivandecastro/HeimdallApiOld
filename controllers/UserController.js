@@ -14,7 +14,7 @@ module.exports = {
         res.status(400).send({ "message": "There was an error registering the user!", "reason": reason });
       }
       else {
-        res.status(200).send({ "message": "Usuário cadastrado com sucesso!", uid: user.id });
+        res.status(200).send({ "message": "User registered with success!", uid: user.id });
       }
     });
   },
