@@ -1,15 +1,11 @@
 let Rule = require('../models/Rule')
 let User = require('../models/User')
 
-let result = (user) => {
-  console.log(user);
-}
-
 module.exports = {
   async create(req, res) {
-    let { rule } = req.body;
+    const { rule } = req.body;
 
-    User.findById(rule.user_id, (err, user) => {
+    await User.findById(rule.user_id, (err, user) => {
       if (user) {
 
         Rule.find({ user_id: rule.user_id, resource: rule.resource }, (err, rules) => {
@@ -39,5 +35,16 @@ module.exports = {
         res.status(404).send({ "message": "User not found!" });
       }
     });
+  },
+
+  async destroy(req, res) {
+    const { id } = req.params;
+
+    const result = await Rule.deleteOne({ "_id": id });
+
+    if (result.deletedCount > 0)
+      res.status(200).send({ message: "Rule deleted with success!" });
+    else
+      res.status(404).send({ message: "Rule not found!" });
   }
 }
