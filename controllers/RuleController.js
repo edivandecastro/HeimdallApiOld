@@ -68,6 +68,24 @@ module.exports = {
     });
   },
 
+  async destroyAction(req, res) {
+    const { id, action } = req.params;
+
+    await Rule.updateOne({ "_id": id }, { $pull: { "action": { $in: [action] }}}, (err, result) => {
+      if (!err) {
+        if (result.n > 0) {
+          res.status(200).send({ message: "Action in rule removed with success!" });
+        }
+        else {
+          res.status(404).send({ message: "Rule not found!" });
+        }
+      }
+      else {
+        res.status(400).send({ "message": "There is already a rule created for this user and resource!" });
+      }
+    });
+  },
+
   async authorize(req, res) {
     const { user_id, resource, action } = req.body;
 
