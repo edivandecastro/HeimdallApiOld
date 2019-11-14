@@ -48,7 +48,27 @@ module.exports = {
       res.status(404).send({ message: "Rule not found!" });
   },
 
-  async userHasResourceAndAction(req, res) {
+  async update(req, res) {
+    const { conditions, rule } = req.body;
+
+    await Rule.updateOne(conditions, rule, (err, result) => {
+      if (!err) {
+        if (result.n > 0) {
+          Rule.findOne(conditions, (err, rule) => {
+            res.status(200).send({ message: "Rule updated with success!", rule });
+          });
+        }
+        else {
+          res.status(404).send({ message: "Rule not found!" });
+        }
+      }
+      else {
+        res.status(400).send({ "message": "There is already a rule created for this user and resource!" });
+      }
+    });
+  },
+
+  async authorize(req, res) {
     const { user_id, resource, action } = req.body;
 
     Rule.find({ user_id, resource, action }, (err, rule) => {

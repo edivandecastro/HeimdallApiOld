@@ -15,8 +15,10 @@ router.post('/authenticate', SessionController.authenticate);
 router.post('/users', authMiddleware, UserController.create);
 router.get('/users/:id', authMiddleware, UserController.show);
 
-router.post('/rules/resources', authMiddleware, RuleController.userHasResourceAndAction);
 router.post('/rules', authMiddleware, RuleController.create);
 router.delete('/rules/:id', authMiddleware, RuleController.destroy);
+router.put('/rules/:id', authMiddleware, RuleController.update);
+
+router.post('/rules/authorization', authMiddleware, RuleController.authorize);
 
 module.exports = router;
