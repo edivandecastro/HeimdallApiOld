@@ -12,11 +12,11 @@ const RuleSchema = mongoose.Schema({
     lowercase: true,
     index: true,
   },
-  action: {
-    type: [String],
+  action: [{
+    type: String,
     required: true,
     lowercase: true,
-  },
+  }],
 });
 
 RuleSchema.index({ user_id: 1, resource: 1 }, { unique: true });

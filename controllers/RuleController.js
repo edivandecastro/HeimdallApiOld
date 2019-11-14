@@ -1,5 +1,5 @@
-let Rule = require('../models/Rule')
-let User = require('../models/User')
+const Rule = require('../models/Rule');
+const User = require('../models/User');
 
 module.exports = {
   async create(req, res) {
@@ -46,5 +46,16 @@ module.exports = {
       res.status(200).send({ message: "Rule deleted with success!" });
     else
       res.status(404).send({ message: "Rule not found!" });
+  },
+
+  async userHasResourceAndAction(req, res) {
+    const { user_id, resource, action } = req.body;
+
+    Rule.find({ user_id, resource, action }, (err, rule) => {
+      if (rule.length > 0)
+        res.status(200).send({ access: true });
+      else
+        res.status(401).send({ access: false });
+    });
   }
 }
