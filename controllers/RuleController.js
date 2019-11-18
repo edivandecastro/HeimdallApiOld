@@ -54,7 +54,7 @@ module.exports = {
     await Rule.updateOne(conditions, rule, (err, result) => {
       if (!err) {
         if (result.n > 0) {
-          Rule.findOne(conditions, (err, rule) => {
+          Rule.findOne(rule, (err, rule) => {
             res.status(200).send({ message: "Rule updated with success!", rule });
           });
         }
@@ -71,7 +71,7 @@ module.exports = {
   async destroyAction(req, res) {
     const { id, action } = req.params;
 
-    await Rule.updateOne({ "_id": id }, { $pull: { "action": { $in: [action] }}}, (err, result) => {
+    await Rule.updateOne({ "_id": id }, { $pull: { actions: { $in: [action] }}}, (err, result) => {
       if (!err) {
         if (result.n > 0) {
           res.status(200).send({ message: "Action in rule removed with success!" });
@@ -81,7 +81,25 @@ module.exports = {
         }
       }
       else {
-        res.status(400).send({ "message": "There is already a rule created for this user and resource!" });
+        res.status(400).send({ message: "There is already a rule created for this user and resource!" });
+      }
+    });
+  },
+
+  async addAction(req, res) {
+    const { id, action } = req.params;
+
+    await Rule.updateOne({ "_id": id }, { $push: { action: action } }, (err, result) => {
+      if (!err) {
+        if (result.n > 0) {
+          res.status(200).send({ message: "Action added with success!" });
+        }
+        else {
+          res.status(404).send({ message: "Rule not found" });
+        }
+      }
+      else {
+        res.status(400).send({ message: "An unexpected error occurred!" });
       }
     });
   },
@@ -89,7 +107,7 @@ module.exports = {
   async authorize(req, res) {
     const { user_id, resource, action } = req.body;
 
-    Rule.find({ user_id, resource, action }, (err, rule) => {
+    Rule.find({ user_id, resource, actions: action }, (err, rule) => {
       if (rule.length > 0)
         res.status(200).send({ access: true });
       else

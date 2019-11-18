@@ -12,7 +12,7 @@ const RuleSchema = mongoose.Schema({
     lowercase: true,
     index: true,
   },
-  action: [{
+  actions: [{
     type: String,
     required: true,
     lowercase: true,
