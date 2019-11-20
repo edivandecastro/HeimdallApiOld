@@ -49,12 +49,12 @@ module.exports = {
   },
 
   async update(req, res) {
-    const { conditions, rule } = req.body;
+    const { conditions, actions } = req.body;
 
-    await Rule.updateOne(conditions, rule, (err, result) => {
+    await Rule.updateOne(conditions, { actions: actions }, (err, result) => {
       if (!err) {
         if (result.n > 0) {
-          Rule.findOne(rule, (err, rule) => {
+          Rule.findOne(conditions, (err, rule) => {
             res.status(200).send({ message: "Rule updated with success!", rule });
           });
         }
