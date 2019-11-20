@@ -74,7 +74,12 @@ module.exports = {
     await Rule.updateOne({ "_id": id }, { $pull: { actions: { $in: [action] }}}, (err, result) => {
       if (!err) {
         if (result.n > 0) {
-          res.status(200).send({ message: "Action in rule removed with success!" });
+          if (result.nModified > 0) {
+            res.status(200).send({ message: "Action in rule removed with success!" });
+          }
+          else {
+            res.status(400).send({ message: "Action not found!" });
+          }
         }
         else {
           res.status(404).send({ message: "Rule not found!" });
@@ -89,19 +94,26 @@ module.exports = {
   async addAction(req, res) {
     const { id, action } = req.params;
 
-    await Rule.updateOne({ "_id": id }, { $push: { action: action } }, (err, result) => {
-      if (!err) {
-        if (result.n > 0) {
+    const rule = await Rule.findOne({ "_id": id });
+
+    if (rule) {
+      if (rule.actions.includes(action.toLowerCase())) {
+        res.status(400).send({ message: "This action has already been added to this resource!" });
+      }
+      else {
+        rule.actions.push(action);
+
+        if (rule.save()) {
           res.status(200).send({ message: "Action added with success!" });
         }
         else {
-          res.status(404).send({ message: "Rule not found" });
+          res.status(400).send({ message: "An unexpected error occurred!" });
         }
       }
-      else {
-        res.status(400).send({ message: "An unexpected error occurred!" });
-      }
-    });
+    }
+    else {
+      res.status(404).send({ message: "Rule not found" });
+    }
   },
 
   async authorize(req, res) {
