@@ -20,6 +20,7 @@ router.delete('/rules/:id', authMiddleware, RuleController.destroy);
 router.delete('/rules/:id/action/:action', authMiddleware, RuleController.destroyAction);
 router.get('/rules/:id/action/:action', authMiddleware, RuleController.addAction);
 router.put('/rules/:id', authMiddleware, RuleController.update);
+router.put('/rules', authMiddleware, RuleController.updateByUserAndResource);
 
 router.post('/rules/authorization', authMiddleware, RuleController.authorize);
 

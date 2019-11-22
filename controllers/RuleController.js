@@ -49,6 +49,27 @@ module.exports = {
   },
 
   async update(req, res) {
+    const { id } = req.params;
+    const { actions } = req.body;
+
+    let rule = await Rule.findById(id);
+
+    if (rule) {
+      rule.actions = actions
+
+      if (await rule.save()) {
+        res.status(200).send({ message: "Rule updated with success!", rule });
+      }
+      else {
+        res.status(400).send({ "message": "An unexpected error occurred!" });
+      }
+    }
+    else {
+      res.status(404).send({ message: "Rule not found!" });
+    }
+  },
+
+  async updateByUserAndResource(req, res) {
     const { conditions, actions } = req.body;
 
     await Rule.updateOne(conditions, { actions: actions }, (err, result) => {
