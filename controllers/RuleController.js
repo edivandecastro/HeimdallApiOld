@@ -48,6 +48,32 @@ module.exports = {
       res.status(404).send({ message: "Rule not found!" });
   },
 
+  async show(req, res) {
+    const { id } = req.params;
+
+    const rule = await Rule.findById(id);
+
+    if (rule) {
+      res.status(200).send(rule);
+    }
+    else  {
+      res.status(404).send({ message: "Rule not found!" });
+    }
+  },
+
+  async showRulesOfUser(req, res) {
+    const { id } = req.params
+
+    const rules = await Rule.find({ user_id: id });
+
+    if (rules && rules.length > 0) {
+      res.status(200).send({ rules });
+    }
+    else {
+      res.status(404).send({ message: "There are no rules for this user" });
+    }
+  },
+
   async update(req, res) {
     const { id } = req.params;
     const { actions } = req.body;

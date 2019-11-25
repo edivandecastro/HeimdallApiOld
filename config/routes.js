@@ -14,11 +14,13 @@ router.post('/authenticate', SessionController.authenticate);
 
 router.post('/users', authMiddleware, UserController.create);
 router.get('/users/:id', authMiddleware, UserController.show);
+router.get('/users/:id/rules', authMiddleware, RuleController.showRulesOfUser);
 
 router.post('/rules', authMiddleware, RuleController.create);
 router.delete('/rules/:id', authMiddleware, RuleController.destroy);
 router.delete('/rules/:id/action/:action', authMiddleware, RuleController.destroyAction);
 router.get('/rules/:id/action/:action', authMiddleware, RuleController.addAction);
+router.get('/rules/:id', authMiddleware, RuleController.show);
 router.put('/rules/:id', authMiddleware, RuleController.update);
 router.put('/rules', authMiddleware, RuleController.updateByUserAndResource);
 
