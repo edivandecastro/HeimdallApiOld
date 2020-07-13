@@ -11,9 +11,9 @@ module.exports = {
 
     const user = await User.findOne({ username }).select('+password');
 
-    if (!user) 
+    if (!user)
       return res.status(404).send({ error: "User not found!" });
-    
+
     if (!await bcrypt.compare(password, user.password))
       return res.status(400).send({ error: "Invalid password!" });
 
@@ -22,7 +22,7 @@ module.exports = {
     const token = jwt.sign({ id: user.id }, authConfig.secret, {
       expiresIn: 86400,
     });
-    
+
     res.send({ user, token });
   }
 }
