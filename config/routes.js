@@ -11,6 +11,7 @@ const SessionController = require('../controllers/SessionController');
 const RuleController = require('../controllers/RuleController');
 
 router.post('/authenticate', SessionController.authenticate);
+router.get('/authenticate/validate', authMiddleware, SessionController.tokenValidate);
 
 router.post('/users', authMiddleware, UserController.create);
 router.get('/users/:id', authMiddleware, UserController.show);

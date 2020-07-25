@@ -30,5 +30,9 @@ module.exports = {
     });
 
     res.send({ user, token });
+  },
+
+  async tokenValidate(req, res) {
+    res.send({ "success" : "Token valid" });
   }
 }
