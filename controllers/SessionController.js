@@ -19,8 +19,14 @@ module.exports = {
 
     user.password = undefined;
 
-    const token = jwt.sign({ id: user.id }, authConfig.secret, {
-      expiresIn: 86400,
+    const payload = {
+      "sub": user.id
+    }
+
+    const token = jwt.sign(payload, authConfig.secret, {
+      expiresIn: "2h",
+      issuer: "HeimdallApi",
+      audience: "token do cliente"
     });
 
     res.send({ user, token });
